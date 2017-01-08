@@ -20,9 +20,26 @@ source venv/bin/activate
 ```
 
 Install the Python dependencies for this project.
-```pip install -r requirements.txt```
+```
+pip install -r requirements.txt
+```
+
+Change to the "aeroproject" Django site/project directory, and run the database migrations.
+By default, this will create a SQLite database, and install your schema objects (tables).
+```
+cd aeroproject
+python manage.py migrate
+```
 
 ## Running
 
 Activate the virtual environment.
-```source venv/bin/activate```
+```
+source venv/bin/activate
+```
+
+Change to the "aeroproject" Django site/project directory, and run the server.
+```
+cd aeroproject
+python manage.py runserver
+```
