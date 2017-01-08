@@ -12,11 +12,15 @@
 # Option --dry-run can be used in both examples to echo the output without writing it to the DB.
 #
 
+from datetime import datetime
 from django.core.management.base import BaseCommand, CommandError
-from airports.models import Facility as Airport
+from airports.models import Facility
 import csv
 import pprint
 import sys
+
+AGENCY_CODE = 'FAA'
+COUNTRY_CODE = 'USA'
 
 class Command(BaseCommand):
     help = 'Loads the FAA Airports (Facilities) file into our backend'
@@ -48,21 +52,21 @@ class Command(BaseCommand):
         out_rec = {}
 
         try:
-            out_rec['agency_code'] = 'FAA'
-            out_rec['country_code'] = 'USA'
+            out_rec['agency_code'] = AGENCY_CODE
+            out_rec['country_code'] = COUNTRY_CODE
             out_rec['agency_site_key'] = in_rec['SiteNumber']
 
             # Local Airport Code
             if in_rec['LocationID']:
-                out_rec['raw_location_id'] = in_rec['LocationID']
                 if in_rec['LocationID'].startswith("'"):
                     out_rec['local_id'] = in_rec['LocationID'][1:]
                 else:
                     out_rec['local_id'] = in_rec['LocationID']
 
             out_rec['facility_type'] = in_rec['Type']
-            out_rec['effective_date'] = in_rec['EffectiveDate']
+            out_rec['effective_date'] = datetime.strptime(in_rec['EffectiveDate'],'%m/%d/%Y')
             out_rec['facility_name'] = in_rec['FacilityName']
+            out_rec['city'] = in_rec['City']
             out_rec['elevation'] = in_rec['ARPElevation']
             out_rec['elevation_units'] = 'FT'
 
@@ -76,9 +80,12 @@ class Command(BaseCommand):
                 if variation.endswith('E') or variation.endswith('W'):
                     out_rec['magnetic_variation_degrees'] = variation[:-1]
                     out_rec['magnetic_variation_direction'] = variation[-1:]
-                    out_rec['magnetic_variation_year'] = in_rec['MagneticVariationYear']
+                    if in_rec['MagneticVariationYear']:
+                        out_rec['magnetic_variation_year'] = in_rec['MagneticVariationYear']
 
-            out_rec['ctaf_frequency'] = in_rec['CTAFFrequency']
+            if in_rec['CTAFFrequency']:
+                out_rec['ctaf_frequency'] = in_rec['CTAFFrequency']
+
             out_rec['icao_id'] = in_rec['IcaoIdentifier']
 
             # Public Use?  If not one of the following codes, then leave null (unknown).
@@ -87,7 +94,10 @@ class Command(BaseCommand):
             elif in_rec['Use'] == 'PR':
                 out_rec['is_public_use'] = False
 
-            out_rec['activation_date'] = in_rec['ActiviationDate']
+            # N.B. Yes, an actual typo in the source data "Activiation" v. "Activation"
+            if in_rec['ActiviationDate']:
+                out_rec['activation_date'] = datetime.strptime(
+                    in_rec['ActiviationDate'],'%m/%d/%Y')
         except:
             print "Unexpected error:", sys.exc_info()[0]
             raise
@@ -97,30 +107,49 @@ class Command(BaseCommand):
     def process_source(self, filename):
 
         records_processed = 0
+        facilities_added = 0
         keys = []
 
-        with open(filename) as tsv:
-            for line in csv.reader(tsv, delimiter="\t"):
-                if records_processed == 0:
-                    keys = line
-                else:
+        try:
+            with open(filename) as tsv:
+                for line in csv.reader(tsv, delimiter="\t"):
+
+                    if not keys:  # first line
+                        keys = line
+                        continue
+
                     values = line
                     # make a dict of this record with the keys/header, and transform it
                     input_facility_d = dict(zip(keys, values))
                     output_facility_d = self.transform_facility(input_facility_d)
+
+                    '''
                     print "-" * 80
                     pprint.pprint(input_facility_d)
                     pprint.pprint(output_facility_d)
+                    '''
 
-                records_processed += 1
-                if records_processed > 10:
-                    break
+                    # Check for a match on agency_code + agency_site_key
+                    result_set = Facility.objects.filter(
+                        agency_code=AGENCY_CODE,
+                        agency_site_key=output_facility_d['agency_site_key']
+                    )
 
-        # Check if the Facility already exists.  If so, check if it has changed before updating
-        # (and that is why we are not using update_or_create, to avoid unnecessary updates).
+                    if len(result_set) == 0:
+                        # Create the model instance from our dictionary
+                        facility = Facility(**output_facility_d)
+                        facility.save()
+                        facilities_added += 1
 
-        #id = 'some identifier'
-        #person, created = Person.objects.get_or_create(identifier=id)
+                    records_processed += 1
+                    if records_processed > 99999:
+                        break
+        except:
+            print "Unexpected error processing file:", sys.exc_info()[0]
+            raise
+
+        self.stdout.write("Source records processed = %s" % records_processed)
+        self.stdout.write("Facilities Added = %s" % facilities_added)
 
     def handle(self, *args, **options):
 
@@ -141,10 +170,6 @@ class Command(BaseCommand):
             self.stdout.write("Dry Run mode -- not saving to database")
 
         self.process_source(options['file'])
-
-        # Test that we can access our model
-        all_airports = Airport.objects.all()
-        print all_airports
 
         self.stdout.write(self.style.SUCCESS('Alright, all done'))
 

@@ -52,7 +52,7 @@ class Facility(models.Model):
 
     # CTAF
     ctaf_frequency = models.DecimalField('Common Traffic Advisory Frequency (CTAF)',
-                                         max_digits=6, decimal_places=3)
+                                         max_digits=6, decimal_places=3, null=True)
 
     # ICAO Airport Identifier (e.g. "KSFO", "CYEG")
     icao_id = models.CharField('ICAO Identifier', max_length=4, db_index=True, null=True)
