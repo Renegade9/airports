@@ -1,11 +1,13 @@
 Grab airport information and store in a PostGIS repository.
 
-This project uses Python and Django.
+This project uses Python and Django (including the Django REST Framework).
 
 Backend databases can either be SQLite with the SpatiaLite extension,
 or PostgreSQL with the PostGIS extension.
 
-Future enhancement:  Use of the GeoDjango extension
+Possible Future enhancements:
+
+Use the GeoDjango extension
 https://docs.djangoproject.com/en/1.10/ref/contrib/gis/tutorial/
 
 ## Setup
