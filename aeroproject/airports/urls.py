@@ -28,4 +28,7 @@ urlpatterns = [
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^$', views.index, name='index'),
     url(r'^test', views.test, name='test'),
+
+    # Find airports by airport code (FAA or ICAO)
+    url(r'^facility/find/(?P<code>[^/.]+)/$', views.FindFacilityByCode.as_view(), name='facility-find-by-code'),
 ]

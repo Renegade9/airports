@@ -1,9 +1,10 @@
 from django.http import HttpResponse, JsonResponse
+from rest_framework.response import Response
 
 from django.contrib.auth.models import User
 from model_definitions import Facility
 
-from rest_framework import viewsets
+from rest_framework import views, viewsets
 from serializers import UserSerializer, FacilitySerializer
 
 def index(request):
@@ -28,3 +29,25 @@ class FacilityViewSet(viewsets.ModelViewSet):
     """
     queryset = Facility.objects.all()
     serializer_class = FacilitySerializer
+
+
+class FindFacilityByCode(views.APIView):
+    """Find a facility by code (FAA or ICAO airport code)"""
+
+    def get(self, request, code):
+
+        code = code.upper()
+
+        # Lookup by the local code first
+        facilities = Facility.objects.filter(local_id=code)
+        if facilities.count() == 0:
+            facilities = Facility.objects.filter(icao_id=code)
+
+        if facilities.count() == 1:
+            facility = facilities[0]
+            serializer = FacilitySerializer(instance=facility)
+            return Response(serializer.data)
+        else:
+            return JsonResponse({'status': 'error',
+                                'message': 'Could not find: {}'.format(code)})
+
