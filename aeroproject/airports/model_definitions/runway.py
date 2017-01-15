@@ -6,7 +6,7 @@ from django.db import models
 
 class Runway(models.Model):
 
-    facility = models.ForeignKey('airports.Facility')
+    facility = models.ForeignKey('airports.Facility', related_name='runways')
 
     # Primary key of the facility with respect to the controlling agency.
     # FAA uses a "SiteNumber" in its database rather than the airport code.
@@ -22,6 +22,12 @@ class Runway(models.Model):
     # Width and Width Units of the Runway
     runway_width = models.IntegerField(null=True)
     runway_width_units = models.CharField(max_length=2, null=True)
+
+    base_end_id = models.CharField(max_length=4)
+    base_end_traffic_dir = models.CharField(max_length=1)
+
+    reciprocal_end_id = models.CharField(max_length=4)
+    reciprocal_end_traffic_dir = models.CharField(max_length=1)
 
     def __str__(self):
         return self.runway_id
