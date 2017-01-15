@@ -4,4 +4,4 @@ from django.db import models
 
 # Include models
 
-from model_definitions import Facility
+from model_definitions import Facility, Runway
