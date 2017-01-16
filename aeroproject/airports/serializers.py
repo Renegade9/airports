@@ -19,6 +19,13 @@ class RunwaySerializer(serializers.HyperlinkedModelSerializer):
 
 class FacilitySerializer(serializers.HyperlinkedModelSerializer):
 
+    skyvector_url = serializers.SerializerMethodField()
+
+    def get_skyvector_url(self, obj):
+        return 'https://skyvector.com/?ll={},{}&chart=301&zoom=1&fpl={}'.format(
+            obj.latitude, obj.longitude, obj.icao_id
+        )
+
     runways = RunwaySerializer(read_only=True, many=True)
 
     class Meta:
@@ -27,4 +34,5 @@ class FacilitySerializer(serializers.HyperlinkedModelSerializer):
                   'facility_name', 'elevation', 'elevation_units', 'tpa_agl', 'tpa_agl_units',
                   'magnetic_variation_degrees', 'magnetic_variation_direction',
                   'magnetic_variation_year', 'ctaf_frequency', 'is_public_use',
-                  'activation_date', 'icao_id', 'runways')
+                  'activation_date', 'icao_id', 'latitude', 'longitude', 'skyvector_url',
+                  'runways')

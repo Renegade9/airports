@@ -25,6 +25,18 @@ COUNTRY_CODE = 'USA'
 class Command(BaseCommand):
     help = 'Loads the FAA Airports (Facilities) file into our backend'
 
+    @staticmethod
+    def convert_faa_geo(coordinate):
+        """
+        FAA files include geo coordinates in "decimal seconds" (e.g. 186780.8954N)...
+        Convert to +/- decimal degrees.
+        """
+        last_char = coordinate[-1:]
+        degrees = float(coordinate[:-1])/3600.0
+        if last_char == 'S' or last_char == 'W':
+            degrees *= -1.0
+        return degrees
+
     def add_arguments(self, parser):
         # Named arguments
         parser.add_argument(
@@ -98,6 +110,9 @@ class Command(BaseCommand):
             if in_rec['ActiviationDate']:
                 out_rec['activation_date'] = datetime.strptime(
                     in_rec['ActiviationDate'],'%m/%d/%Y')
+
+            out_rec['latitude'] = self.convert_faa_geo(in_rec['ARPLatitudeS'])
+            out_rec['longitude'] = self.convert_faa_geo(in_rec['ARPLongitudeS'])
         except:
             print "Unexpected error:", sys.exc_info()[0]
             raise
