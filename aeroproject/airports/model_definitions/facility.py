@@ -63,5 +63,9 @@ class Facility(models.Model):
     # Date the airport became active
     activation_date = models.DateField(null=True)
 
+    # Latitude and Longitude in decimal degrees
+    latitude = models.DecimalField(max_digits=9, decimal_places=6)
+    longitude = models.DecimalField(max_digits=9, decimal_places=6)
+
     def __str__(self):
         return self.local_id + ' (' + self.city + ')'
