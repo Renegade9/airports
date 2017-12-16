@@ -2,10 +2,10 @@ from django.http import HttpResponse, JsonResponse
 from rest_framework.response import Response
 
 from django.contrib.auth.models import User
-from model_definitions import Facility
+from airports.models import Facility
 
 from rest_framework import views, viewsets
-from serializers import UserSerializer, FacilitySerializer
+from airports.serializers import UserSerializer, FacilitySerializer
 
 def index(request):
     return HttpResponse("Hello, world. You're at the airports index.")
