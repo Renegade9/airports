@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User, Group
-from model_definitions import Facility, Runway
+from airports.models import Facility, Runway
 
 from rest_framework import serializers
 
