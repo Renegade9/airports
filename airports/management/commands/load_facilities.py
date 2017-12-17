@@ -138,12 +138,6 @@ class Command(BaseCommand):
                     input_facility_d = dict(zip(keys, values))
                     output_facility_d = self.transform_facility(input_facility_d)
 
-                    '''
-                    print "-" * 80
-                    pprint.pprint(input_facility_d)
-                    pprint.pprint(output_facility_d)
-                    '''
-
                     # Check for a match on agency_code + agency_site_key
                     result_set = Facility.objects.filter(
                         agency_code=AGENCY_CODE,

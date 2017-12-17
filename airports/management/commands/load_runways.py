@@ -111,12 +111,6 @@ class Command(BaseCommand):
                     input_runway_d = dict(zip(keys, values))
                     output_runway_d = self.transform_runway(input_runway_d)
 
-                    """
-                    print "-" * 80
-                    pprint.pprint(input_runway_d)
-                    pprint.pprint(output_runway_d)
-                    """
-
                     if output_runway_d:
                         # Check for a match on agency_site_key + runway_id
                         result_set = Runway.objects.filter(
