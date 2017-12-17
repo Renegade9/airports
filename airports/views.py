@@ -90,7 +90,7 @@ class FacilitiesList(generics.ListAPIView):
     permission_classes = (AllowAny,)
 
     filter_backends = (filters.OrderingFilter, django_filters.rest_framework.DjangoFilterBackend)
-    ordering_fields = ('local_id', 'icao_id', 'state_or_prov')
+    ordering_fields = ('elevation', 'local_id', 'icao_id', 'state_or_prov')
     filter_class = FacilitiesFilter
 
     serializer_class = FacilitySerializer
