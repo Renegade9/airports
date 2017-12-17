@@ -29,7 +29,7 @@ urlpatterns = [
     url(r'^test', views.test, name='test'),
 
     # List airports
-    url(r'^facilities/$', views.ListFacilities.as_view(), name='list-facilities'),
+    url(r'^facilities/$', views.FacilitiesList.as_view(), name='list-facilities'),
 
     # Find airports by airport code (FAA or ICAO)
     url(r'^facility/code/(?P<code>[^/.]+)/$', views.FindFacilityByCode.as_view(), name='facility-find-by-code'),
