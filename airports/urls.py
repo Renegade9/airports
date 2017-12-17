@@ -30,5 +30,5 @@ urlpatterns = [
     url(r'^test', views.test, name='test'),
 
     # Find airports by airport code (FAA or ICAO)
-    url(r'^facility/find/(?P<code>[^/.]+)/$', views.FindFacilityByCode.as_view(), name='facility-find-by-code'),
+    url(r'^facility/(?P<code>[^/.]+)/$', views.FindFacilityByCode.as_view(), name='facility-find-by-code'),
 ]
