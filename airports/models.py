@@ -10,7 +10,10 @@ class Facility(models.Model):
 
     # ISO-3166 "Alpha-3" country codes (e.g. USA, CAN, MEX)
     # https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3
-    country_code = models.CharField(max_length=3)
+    country_code = models.CharField(max_length=3, db_index=True)
+
+    # State or Province Code
+    state_or_prov = models.CharField(max_length=3, db_index=True)
 
     # Primary key of the facility with respect to the controlling agency.
     # FAA uses a "SiteNumber" in its database rather than the airport code.

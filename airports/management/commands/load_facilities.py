@@ -66,6 +66,7 @@ class Command(BaseCommand):
         try:
             out_rec['agency_code'] = AGENCY_CODE
             out_rec['country_code'] = COUNTRY_CODE
+            out_rec['state_or_prov'] = in_rec['State']
             out_rec['agency_site_key'] = in_rec['SiteNumber']
 
             # Local Airport Code
