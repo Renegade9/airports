@@ -73,7 +73,7 @@ class Facility(models.Model):
 
 class Runway(models.Model):
 
-    facility = models.ForeignKey('airports.Facility', related_name='runways')
+    facility = models.ForeignKey('airports.Facility', related_name='runways', on_delete=models.CASCADE)
 
     # Primary key of the facility with respect to the controlling agency.
     # FAA uses a "SiteNumber" in its database rather than the airport code.
