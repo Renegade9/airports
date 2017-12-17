@@ -86,8 +86,8 @@ class Command(BaseCommand):
             else:
                 out_rec['reciprocal_end_traffic_dir'] = 'L'
 
-        except:
-            print "Unexpected error:", sys.exc_info()[0]
+        except Exception:
+            print("Unexpected error: {}".format(sys.exc_info()[0]))
             raise
 
         return out_rec
@@ -131,10 +131,9 @@ class Command(BaseCommand):
                             runways_added += 1
 
                     records_processed += 1
-                    if records_processed > 99999:
-                        break
-        except:
-            print "Unexpected error processing file:", sys.exc_info()[0]
+
+        except Exception:
+            print("Unexpected error processing file: {}".format(sys.exc_info()[0]))
             raise
 
         self.stdout.write("Source records processed = %s" % records_processed)
@@ -161,6 +160,3 @@ class Command(BaseCommand):
         self.process_source(options['file'])
 
         self.stdout.write(self.style.SUCCESS('Alright, all done'))
-
-
-
