@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from django.contrib.auth.models import User
 from airports.models import Facility
 
-from rest_framework import generics, views, viewsets
+from rest_framework import filters, generics, views, viewsets
 from airports.serializers import UserSerializer, FacilitySerializer
 
 def index(request):
@@ -54,8 +54,8 @@ class FindFacilityByCode(views.APIView):
 
 class ListFacilities(generics.ListAPIView):
     """List Facilities with various filters"""
-    #filter_backends = (filters.OrderingFilter,)
-    #ordering_fields = ('name',)
+    filter_backends = (filters.OrderingFilter,)
+    ordering_fields = ('local_id', 'icao_id', 'state_or_prov')
 
     serializer_class = FacilitySerializer
     queryset = Facility.objects.all()
