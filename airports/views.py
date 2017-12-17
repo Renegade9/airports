@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from django.contrib.auth.models import User
 from airports.models import Facility
 
-from rest_framework import views, viewsets
+from rest_framework import generics, views, viewsets
 from airports.serializers import UserSerializer, FacilitySerializer
 
 def index(request):
@@ -51,3 +51,11 @@ class FindFacilityByCode(views.APIView):
             return JsonResponse({'status': 'error',
                                 'message': 'Could not find: {}'.format(code)})
 
+
+class ListFacilities(generics.ListAPIView):
+    """List Facilities with various filters"""
+    #filter_backends = (filters.OrderingFilter,)
+    #ordering_fields = ('name',)
+
+    serializer_class = FacilitySerializer
+    queryset = Facility.objects.all()

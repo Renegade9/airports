@@ -24,11 +24,17 @@ router.register(r'users', views.UserViewSet)
 router.register(r'facilities', views.FacilityViewSet)
 
 urlpatterns = [
-    url(r'^', include(router.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^$', views.index, name='index'),
     url(r'^test', views.test, name='test'),
 
+    # List airports
+    url(r'^facilities/$', views.ListFacilities.as_view(), name='list-facilities'),
+
     # Find airports by airport code (FAA or ICAO)
-    url(r'^facility/(?P<code>[^/.]+)/$', views.FindFacilityByCode.as_view(), name='facility-find-by-code'),
+    url(r'^facility/code/(?P<code>[^/.]+)/$', views.FindFacilityByCode.as_view(), name='facility-find-by-code'),
+
+    # default the rest to the built-ins
+    url(r'^', include(router.urls)),
+
 ]
