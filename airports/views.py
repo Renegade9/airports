@@ -7,7 +7,7 @@ from airports.models import Facility
 from rest_framework import filters, generics, views, viewsets
 
 from rest_framework.permissions import AllowAny
-from airports.serializers import UserSerializer, FacilitySerializer
+from airports.serializers import UserSerializer, FacilitySerializer, FacilityDetailSerializer
 
 import django_filters
 
@@ -35,6 +35,13 @@ class FacilityViewSet(viewsets.ModelViewSet):
     serializer_class = FacilitySerializer
 
 
+class FindFacilityById(generics.RetrieveAPIView):
+    """Retrieve Facility by ID"""
+    permission_classes = (AllowAny,)
+    queryset = Facility.objects.all()
+    serializer_class = FacilityDetailSerializer
+
+
 class FindFacilityByCode(views.APIView):
     """Find a facility by code (FAA or ICAO airport code)"""
     permission_classes = (AllowAny,)
@@ -50,7 +57,7 @@ class FindFacilityByCode(views.APIView):
 
         if facilities.count() == 1:
             facility = facilities[0]
-            serializer = FacilitySerializer(instance=facility)
+            serializer = FacilityDetailSerializer(instance=facility)
             return Response(serializer.data)
         else:
             return JsonResponse({'status': 'error',

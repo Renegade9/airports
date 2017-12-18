@@ -19,6 +19,19 @@ class RunwaySerializer(serializers.HyperlinkedModelSerializer):
 
 class FacilitySerializer(serializers.HyperlinkedModelSerializer):
 
+    class Meta:
+        model = Facility
+        fields = ('id', 'agency_code', 'country_code', 'state_or_prov', 'local_id', 'facility_type', 'city',
+                  'facility_name', 'elevation', 'elevation_units', 'tpa_agl', 'tpa_agl_units',
+                  'magnetic_variation_degrees', 'magnetic_variation_direction',
+                  'magnetic_variation_year', 'ctaf_frequency', 'is_public_use',
+                  'activation_date', 'icao_id', 'latitude', 'longitude')
+
+
+class FacilityDetailSerializer(serializers.HyperlinkedModelSerializer):
+    """Facility serializer that includes runways"""
+
+    runways = RunwaySerializer(read_only=True, many=True)
     skyvector_url = serializers.SerializerMethodField()
 
     def get_skyvector_url(self, obj):
@@ -26,11 +39,9 @@ class FacilitySerializer(serializers.HyperlinkedModelSerializer):
             obj.latitude, obj.longitude, obj.icao_id
         )
 
-    runways = RunwaySerializer(read_only=True, many=True)
-
     class Meta:
         model = Facility
-        fields = ('agency_code', 'country_code', 'state_or_prov', 'local_id', 'facility_type', 'city',
+        fields = ('id', 'agency_code', 'country_code', 'state_or_prov', 'local_id', 'facility_type', 'city',
                   'facility_name', 'elevation', 'elevation_units', 'tpa_agl', 'tpa_agl_units',
                   'magnetic_variation_degrees', 'magnetic_variation_direction',
                   'magnetic_variation_year', 'ctaf_frequency', 'is_public_use',
