@@ -25,7 +25,7 @@ SECRET_KEY = '9%0k1s2d=vfl+gn)-1#po7oi=zs_#nmh%49*)!^3!i2xdg)0pk'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '54.241.201.33', 'airportpatterns.com', 'airportcircuits.com']
 
 
 # Application definition
