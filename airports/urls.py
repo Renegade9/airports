@@ -31,10 +31,13 @@ urlpatterns = [
     # List airports
     url(r'^facilities/$', views.FacilitiesList.as_view(), name='list-facilities'),
 
+    # Find airport by ID
+    url(r'^facility/(?P<pk>\d+)/$', views.FindFacilityById.as_view(), name='facility-find-by-id'),
+
     # Find airports by airport code (FAA or ICAO)
     url(r'^facility/code/(?P<code>[^/.]+)/$', views.FindFacilityByCode.as_view(), name='facility-find-by-code'),
 
     # default the rest to the built-ins
-    url(r'^', include(router.urls)),
+    ### url(r'^', include(router.urls)),
 
 ]
